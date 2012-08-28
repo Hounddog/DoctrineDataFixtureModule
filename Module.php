@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace DoctrineDataFixtureModule
+namespace DoctrineDataFixtureModule;
 
 use DoctrineModule\Service\DriverFactory;
 use DoctrineModule\Service\EventManagerFactory;
@@ -43,7 +43,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
-use DataFixture\Command\ImportCommand;
+use DoctrineDataFixtureModule\Command\ImportCommand;
 
 /**
  * Base module for Doctrine ORM.
