@@ -60,12 +60,11 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-
+        $loader = new Loader();
+        $purger = new ORMPurger();
+        $executor = new ORMExecutor($this->em, $purger);
         foreach($this->paths as $key => $value) {
-            $loader = new Loader();
             $loader->loadFromDirectory($value);
-            $purger = new ORMPurger();
-            $executor = new ORMExecutor($this->em, $purger);
             $executor->execute($loader->getFixtures());
 
         }
