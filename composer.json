@@ -18,12 +18,12 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "doctrine/doctrine-orm-module": "dev-master",
+        "doctrine/doctrine-orm-module": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
-            "DoctrineDataFixtureModule": "src/",
+            "DoctrineDataFixtureModule": "src/"
         }
     }
 }
