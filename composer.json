@@ -1,5 +1,5 @@
 {
-    "name": "hounddog/doctrine-orm-module",
+    "name": "hounddog/doctrine-data-fixture-module",
     "description": "Zend Framework 2 Module that provides Doctrine Data-Fixture functionality",
     "type": "library",
     "license": "MIT",
