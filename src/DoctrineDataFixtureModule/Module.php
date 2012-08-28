@@ -19,15 +19,6 @@
 
 namespace DoctrineDataFixtureModule;
 
-use DoctrineModule\Service\DriverFactory;
-use DoctrineModule\Service\EventManagerFactory;
-
-use DoctrineORMModule\Service\ConfigurationFactory as ORMConfigurationFactory;
-use DoctrineORMModule\Service\EntityManagerFactory;
-use DoctrineORMModule\Service\EntityResolverFactory;
-use DoctrineORMModule\Service\DBALConnectionFactory;
-use DoctrineORMModule\Service\SQLLoggerCollectorFactory;
-use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
 
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
@@ -40,18 +31,16 @@ use Zend\Loader\StandardAutoloader;
 use Zend\EventManager\EventInterface;
 
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
-use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+
 use DoctrineDataFixtureModule\Command\ImportCommand;
+use DoctrineDataFixtureModule\Service\FixtureFactory;
 
 /**
- * Base module for Doctrine ORM.
+ * Base module for Doctrine Data Fixture.
  *
  * @license MIT
  * @link    www.doctrine-project.org
- * @author  Kyle Spraggs <theman@spiffyjr.me>
- * @author  Marco Pivetta <ocramius@gmail.com>
+ * @author  Martin Shwalbe <martin.shwalbe@gmail.com>
  */
 class Module implements
     AutoloaderProviderInterface,
@@ -78,6 +67,9 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
+        //$config = $app->getServiceManager()->get('Config');
+        //$app->getServiceManager()->get('doctrine.configuration.fixtures');
+
         /* @var $app \Zend\Mvc\ApplicationInterface */
         $app    = $e->getTarget();
         $events = $app->getEventManager()->getSharedManager();
@@ -87,30 +79,19 @@ class Module implements
             /* @var $cli \Symfony\Component\Console\Application */
             $cli = $e->getTarget();
 
-            ConsoleRunner::addCommands($cli);
-            $cli->addCommands(array(
-                new ImportCommand()
-            ));
-
             /* @var $sm ServiceLocatorInterface */
             $sm = $e->getParam('ServiceManager');
-            /* @var $em \Doctrine\ORM\EntityManager */
             $em = $sm->get('doctrine.entitymanager.orm_default');
-            $helperSet = $cli->getHelperSet();
-            $helperSet->set(new DialogHelper(), 'dialog');
-            $helperSet->set(new ConnectionHelper($em->getConnection()), 'db');
-            $helperSet->set(new EntityManagerHelper($em), 'em');
+            $paths = $sm->get('doctrine.configuration.fixtures');
+
+            $importCommand = new ImportCommand();
+            $importCommand->setEntityManager($em);
+            $importCommand->setPath($paths);
+            ConsoleRunner::addCommands($cli);
+            $cli->addCommands(array(
+                $importCommand
+            ));
         });
-
-        $config = $app->getServiceManager()->get('Config');
-        $app->getServiceManager()->get('doctrine.entity_resolver.orm_default');
-
-        if (
-            isset($config['zenddevelopertools']['profiler']['enabled'])
-            && $config['zenddevelopertools']['profiler']['enabled']
-        ) {
-            $app->getServiceManager()->get('doctrine.sql_logger_collector.orm_default');
-        }
     }
 
     /**
@@ -127,6 +108,9 @@ class Module implements
     public function getServiceConfig()
     {
         return array(
+            'factories' => array(
+                'doctrine.configuration.fixtures' => new FixtureFactory('fixtures_default'),
+            ),
         );
     }
 }

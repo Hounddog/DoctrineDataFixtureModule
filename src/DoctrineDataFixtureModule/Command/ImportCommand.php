@@ -27,6 +27,9 @@ use Symfony\Component\Console\Command\Command,
     Doctrine\ORM\Tools\SchemaTool,
     Doctrine\DBAL\Migrations\Configuration\Configuration;
 
+use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 /**
  * Command for generate migration classes by comparing your current database schema
  * to your mapping information.
@@ -38,6 +41,10 @@ use Symfony\Component\Console\Command\Command,
  */
 class ImportCommand extends Command
 {
+    protected $paths;
+
+    protected $em;
+
     protected function configure()
     {
         parent::configure();
@@ -46,21 +53,31 @@ class ImportCommand extends Command
             ->setName('data-fixture:import')
             ->setDescription('Import Data Fixtures')
             ->setHelp(<<<EOT
-The <info>%command.name%</info> command generates a migration by comparing your current database to your mapping information:
-
-    <info>%command.full_name%</info>
-
-You can optionally specify a <comment>--editor-cmd</comment> option to open the generated file in your favorite editor:
-
-    <info>%command.full_name% --editor-cmd=mate</info>
+The import command Imports data-fixtures
 EOT
-            )
-            ->addOption('filter-expression', null, InputOption::VALUE_OPTIONAL, 'Tables which are filtered by Regular Expression.');
+            );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        echo 'importing data-fixtures';
-        exit;
+
+        foreach($this->paths as $key => $value) {
+            $loader = new Loader();
+            $loader->loadFromDirectory($value);
+            $purger = new ORMPurger();
+            $executor = new ORMExecutor($this->em, $purger);
+            $executor->execute($loader->getFixtures());
+
+        }
+    }
+
+    public function setPath($paths) 
+    {
+        $this->paths=$paths;
+    }
+
+    public function setEntityManager($em)
+    {
+        $this->em = $em;
     }
 }

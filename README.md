@@ -33,6 +33,19 @@ Installation of this module uses composer. For composer documentation, please re
   3. run `php composer.phar install`
   4. open `my/project/directory/config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and `DoctrineDataFixtureModule` to your `modules`
 
+#### Registering Fixtures
+
+To register drivers with Doctrine module simply add the drivers to the doctrine.driver key in your configuration.
+
+```php
+<?php
+return array(
+    'data-fixture' => array(
+        'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
+    ),
+);
+```
+
 ## Usage
 
 #### Command Line
