@@ -31,7 +31,7 @@ Installation of this module uses composer. For composer documentation, please re
      }
      ```
   3. run `php composer.phar install`
-  4. open `my/project/directory/config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and 'DoctrineDataFixtureModule` to your `modules`
+  4. open `my/project/directory/config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and `DoctrineDataFixtureModule` to your `modules`
 
 ## Usage
 
