@@ -49,8 +49,7 @@ class ImportCommand extends Command
     {
         parent::configure();
 
-        $this
-            ->setName('data-fixture:import')
+        $this->setName('data-fixture:import')
             ->setDescription('Import Data Fixtures')
             ->setHelp(<<<EOT
 The import command Imports data-fixtures
@@ -63,11 +62,11 @@ EOT
         $loader = new Loader();
         $purger = new ORMPurger();
         $executor = new ORMExecutor($this->em, $purger);
+
         foreach($this->paths as $key => $value) {
             $loader->loadFromDirectory($value);
-            $executor->execute($loader->getFixtures());
-
         }
+        $executor->execute($loader->getFixtures());
     }
 
     public function setPath($paths) 

@@ -36,7 +36,7 @@ class FixtureFactory implements FactoryInterface
     {
         /** @var $options \DoctrineORMModule\Options\DBALConnection */
         $options = $this->getOptions($sl, 'fixtures');
-
+        
         return $options;
     }
 
@@ -54,10 +54,6 @@ class FixtureFactory implements FactoryInterface
 
         $options = $sl->get('Configuration');
         $options = $options['data-fixture'];
-
-        $optionsClass = $this->getOptionsClass();
-
-        //return new $optionsClass($options);
         return $options;
     }
 
