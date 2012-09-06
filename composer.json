@@ -18,9 +18,9 @@
     ],
     "require": {
         "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*"
         "doctrine/doctrine-orm-module": "dev-master"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
             "DoctrineDataFixtureModule": "src/"
