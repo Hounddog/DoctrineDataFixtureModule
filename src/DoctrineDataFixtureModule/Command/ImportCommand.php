@@ -45,6 +45,8 @@ class ImportCommand extends Command
 
     protected $em;
 
+    const PURGE_MODE_TRUNCATE = 2;
+
     protected function configure()
     {
         parent::configure();
@@ -65,7 +67,7 @@ EOT
         $purger = new ORMPurger();
 
         if($input->getOption('purge-with-truncate')) {
-            $purger->setPurgeMode(2);
+            $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
         $executor = new ORMExecutor($this->em, $purger);
