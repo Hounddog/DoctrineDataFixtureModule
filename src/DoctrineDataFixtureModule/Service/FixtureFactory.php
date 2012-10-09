@@ -51,10 +51,12 @@ class FixtureFactory implements FactoryInterface
      */
     public function getOptions(ServiceLocatorInterface $sl, $key)
     {
-
         $options = $sl->get('Configuration');
-        $options = $options['data-fixture'];
-        return $options;
+        if(!isset($options['data-fixture'])) {
+            return array();
+        }
+        
+        return $options['data-fixture'];
     }
 
     public function getOptionsClass()
