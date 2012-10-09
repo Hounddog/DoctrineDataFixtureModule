@@ -54,19 +54,26 @@ class ImportCommand extends Command
             ->setHelp(<<<EOT
 The import command Imports data-fixtures
 EOT
-            );
+            )
+            ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $loader = new Loader();
         $purger = new ORMPurger();
+
+        if($input->getOption('purge-with-truncate')) {
+            $purger->setPurgeMode(2);
+        }
+
         $executor = new ORMExecutor($this->em, $purger);
 
         foreach($this->paths as $key => $value) {
             $loader->loadFromDirectory($value);
         }
-        $executor->execute($loader->getFixtures());
+        $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
     public function setPath($paths) 
