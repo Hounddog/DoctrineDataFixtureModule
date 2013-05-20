@@ -20,7 +20,7 @@
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.*",
         "doctrine/data-fixtures": "dev-master",
-        "doctrine/doctrine-orm-module": "dev-master"
+        "doctrine/doctrine-orm-module": "*"
     },
     "autoload": {
         "psr-0": {
