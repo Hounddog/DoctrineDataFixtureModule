@@ -22,7 +22,7 @@
         "zendframework/zend-eventmanager": "2.*",
         "zendframework/zend-servicemanager": "2.*",
         "doctrine/data-fixtures": "dev-master",
-        "doctrine/doctrine-orm-module": "dev-master"
+        "doctrine/doctrine-orm-module": "~0.7"
     },
     "autoload": {
         "psr-0": {
