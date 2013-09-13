@@ -16,22 +16,12 @@ and easily. The following features are intended to work out of the box:
 Installation of this module uses composer. For composer documentation, please refer to
 [getcomposer.org](http://getcomposer.org/).
 
-#### Installation steps
+```sh
+$ php composer.phar require hounddog/doctrine-data-fixture-module:0.0.*
+```
 
-  1. `cd my/project/directory`
-  2. create a `composer.json` file with following contents (minimum stability is required since the module still has
-     frequent updates):
-
-     ```json
-     {
-         "minimum-stability": "dev",
-         "require": {
-             "hounddog/doctrine-data-fixture-module": "dev-master"
-         }
-     }
-     ```
-  3. run `php composer.phar install`
-  4. open `my/project/directory/config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and `DoctrineDataFixtureModule` to your `modules`
+Then open `config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and 
+`DoctrineDataFixtureModule` to your `modules`
 
 #### Registering Fixtures
 
