@@ -9,7 +9,8 @@ and easily. The following features are intended to work out of the box:
   - Support reuse existing PDO connections in DBAL
 
 ## Requirements
-[Zend Framework 2](http://www.github.com/zendframework/zf2)
+
+This module is designed to work with a typical [ZF2 MVC application](https://github.com/zendframework/ZendSkeletonApplication).
 
 ## Installation
 
