@@ -68,12 +68,12 @@ class Module implements
 
             /* @var $sm ServiceLocatorInterface */
             $sm = $e->getParam('ServiceManager');
-            $em = $sm->get('doctrine.entitymanager.orm_default');
             $paths = $sm->get('doctrine.configuration.fixtures');
 
             $importCommand = new ImportCommand();
-            $importCommand->setEntityManager($em);
+            $importCommand->setSm($sm);
             $importCommand->setPath($paths);
+
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
                 $importCommand

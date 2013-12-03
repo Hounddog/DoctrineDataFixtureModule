@@ -30,6 +30,8 @@ use Symfony\Component\Console\Command\Command,
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+
+use Zend\ServiceManager\ServiceManager;
 /**
  * Command for generate migration classes by comparing your current database schema
  * to your mapping information.
@@ -41,9 +43,15 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
  */
 class ImportCommand extends Command
 {
-    protected $paths;
+    /**
+     * @var array
+     */
+    private $_paths;
 
-    protected $em;
+    /**
+     * @var ServiceManager
+     */
+    private $_sm;
 
     const PURGE_MODE_TRUNCATE = 2;
 
@@ -58,7 +66,8 @@ The import command Imports data-fixtures
 EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
+            ->addOption('em', null, InputOption::VALUE_NONE, 'Specifies the EntitiesManager');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -66,25 +75,37 @@ EOT
         $loader = new Loader();
         $purger = new ORMPurger();
 
+        if($input->getOption('em')) {
+            $em = $this->_sm->get('doctrine.entitymanager.' . $input->getOption('em'));
+        } else {
+            $em = $this->_sm->get('doctrine.entitymanager.orm_default');
+        }
+
         if($input->getOption('purge-with-truncate')) {
             $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
-        $executor = new ORMExecutor($this->em, $purger);
+        $executor = new ORMExecutor($em, $purger);
 
-        foreach($this->paths as $key => $value) {
+        foreach($this->_paths as $key => $value) {
             $loader->loadFromDirectory($value);
         }
         $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
+    /**
+     * @param array $paths
+     */
     public function setPath($paths) 
     {
-        $this->paths=$paths;
+        $this->_paths = $paths;
     }
 
-    public function setEntityManager($em)
+    /**
+     * @param ServiceManager $sm
+     */
+    public function setSm(ServiceManager $sm)
     {
-        $this->em = $em;
+        $this->_sm = $sm;
     }
 }
