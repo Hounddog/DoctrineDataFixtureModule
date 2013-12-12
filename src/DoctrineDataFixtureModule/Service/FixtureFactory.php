@@ -52,7 +52,7 @@ class FixtureFactory implements FactoryInterface
     public function getOptions(ServiceLocatorInterface $sl, $key)
     {
         $options = $sl->get('Configuration');
-        if(!isset($options['data-fixture'])) {
+        if (!isset($options['data-fixture'])) {
             return array();
         }
         
@@ -61,6 +61,6 @@ class FixtureFactory implements FactoryInterface
 
     public function getOptionsClass()
     {
-       return 'DoctrineDataFixtureModule\Options\Fixture';
+        return 'DoctrineDataFixtureModule\Options\Fixture';
     }
 }
