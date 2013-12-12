@@ -19,17 +19,17 @@
 
 namespace DoctrineDataFixtureModule\Command;
 
-use Symfony\Component\Console\Command\Command,
-    Symfony\Component\Console\Input\InputInterface,
-    Symfony\Component\Console\Output\OutputInterface,
-    Symfony\Component\Console\Input\InputArgument,
-    Symfony\Component\Console\Input\InputOption,
-    Doctrine\ORM\Tools\SchemaTool,
-    Doctrine\DBAL\Migrations\Configuration\Configuration;
-
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+
 /**
  * Command for generate migration classes by comparing your current database schema
  * to your mapping information.
@@ -53,7 +53,8 @@ class ImportCommand extends Command
 
         $this->setName('data-fixture:import')
             ->setDescription('Import Data Fixtures')
-            ->setHelp(<<<EOT
+            ->setHelp(
+<<<EOT
 The import command Imports data-fixtures
 EOT
             )
@@ -66,19 +67,19 @@ EOT
         $loader = new Loader();
         $purger = new ORMPurger();
 
-        if($input->getOption('purge-with-truncate')) {
+        if ($input->getOption('purge-with-truncate')) {
             $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
         $executor = new ORMExecutor($this->em, $purger);
 
-        foreach($this->paths as $key => $value) {
+        foreach ($this->paths as $key => $value) {
             $loader->loadFromDirectory($value);
         }
         $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
-    public function setPath($paths) 
+    public function setPath($paths)
     {
         $this->paths=$paths;
     }

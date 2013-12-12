@@ -62,7 +62,7 @@ class Module implements
         $events = $e->getEventManager()->getSharedManager();
 
         // Attach to helper set event and load the entity manager helper.
-        $events->attach('doctrine', 'loadCli.post', function(EventInterface $e) {
+        $events->attach('doctrine', 'loadCli.post', function (EventInterface $e) {
             /* @var $cli \Symfony\Component\Console\Application */
             $cli = $e->getTarget();
 
