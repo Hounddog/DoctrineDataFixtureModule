@@ -36,9 +36,9 @@ To register fixtures with Doctrine module add the fixtures to the doctrine key i
 ```php
 <?php
 return array(
-	'doctrine' => array(
-		'fixture' => array(
-        	'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
+    'doctrine' => array(
+        'fixture' => array(
+            'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
         )
     ),
 );
@@ -51,5 +51,5 @@ Access the Doctrine command line as following
 
 ##Import
 ```sh
-./vendor/bin/doctrine-module data data-fixture:import 
+./vendor/bin/doctrine-module data-fixture:import 
 ```
