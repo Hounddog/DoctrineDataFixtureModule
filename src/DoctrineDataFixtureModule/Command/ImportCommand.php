@@ -59,7 +59,13 @@ The import command Imports data-fixtures
 EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
+            ->addOption(
+                'fixtures',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set path to Fixture Class or Directory to be added'
+            );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -73,9 +79,27 @@ EOT
 
         $executor = new ORMExecutor($this->em, $purger);
 
-        foreach ($this->paths as $key => $value) {
-            $loader->loadFromDirectory($value);
+        if ($input->getOption('fixtures') != null) {
+            $fixtures = $input->getOption('fixtures');
+            if (is_dir($fixtures)) {
+                $loader->loadFromDirectory($fixtures);
+            } elseif (file_exists($fixtures)) {
+                $classes = get_declared_classes();
+                include($fixtures);
+                $newClasses = get_declared_classes();
+
+                $diff = array_diff($newClasses, $classes);
+                $class = array_pop($diff);
+                $loader->addFixture(new $class);
+            } else {
+                throw new \RuntimeException('Cannot find File or Directory.');
+            }
+        } else {
+            foreach ($this->paths as $key => $value) {
+                $loader->loadFromDirectory($value);
+            }
         }
+        
         $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
