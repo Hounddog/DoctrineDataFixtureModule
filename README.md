@@ -50,3 +50,11 @@ Access the Doctrine command line as following
 ```sh
 ./vendor/bin/doctrine-module
 ```
+
+##Options
+
+--append
+
+--purge-with-truncate  
+
+--fixtures=./path/to/fixtures/or/directory
