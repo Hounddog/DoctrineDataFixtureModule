@@ -17,6 +17,6 @@ if (! isset($loader)) {
 }
 
 /* @var $loader \Composer\Autoload\ClassLoader */
-$loader->add('DoctrineDataFixtureTest\\', __DIR__);
+$loader->add('DoctrineDataModuleFixtureTest\\', __DIR__);
 
 unset($files, $file, $loader);
