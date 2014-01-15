@@ -26,9 +26,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * Command for generate migration classes by comparing your current database schema
@@ -39,11 +41,17 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
  * @since   2.0
  * @author  Jonathan Wage <jonwage@gmail.com>
  */
-class ImportCommand extends Command
+class ImportCommand extends Command implements ServiceLocatorAwareInterface
 {
     protected $paths;
 
     protected $em;
+    
+    /**
+     * Service Locator instance
+     * @var Zend\ServiceManager\ServiceLocatorInterface
+     */
+    protected $serviceLocator;
 
     const PURGE_MODE_TRUNCATE = 2;
 
@@ -64,7 +72,7 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new Loader();
+        $loader = new ServiceLocatorAwareLoader($this->getServiceLocator());
         $purger = new ORMPurger();
 
         if ($input->getOption('purge-with-truncate')) {
@@ -87,5 +95,26 @@ EOT
     public function setEntityManager($em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        return $this;
+    }
+    
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
 }
