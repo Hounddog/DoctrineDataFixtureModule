@@ -30,7 +30,6 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * Command for generate migration classes by comparing your current database schema
@@ -41,7 +40,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @since   2.0
  * @author  Jonathan Wage <jonwage@gmail.com>
  */
-class ImportCommand extends Command implements ServiceLocatorAwareInterface
+class ImportCommand extends Command
 {
     protected $paths;
 
@@ -54,6 +53,12 @@ class ImportCommand extends Command implements ServiceLocatorAwareInterface
     protected $serviceLocator;
 
     const PURGE_MODE_TRUNCATE = 2;
+    
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -72,7 +77,7 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new ServiceLocatorAwareLoader($this->getServiceLocator());
+        $loader = new ServiceLocatorAwareLoader($this->serviceLocator);
         $purger = new ORMPurger();
 
         if ($input->getOption('purge-with-truncate')) {
@@ -97,24 +102,4 @@ EOT
         $this->em = $em;
     }
 
-    /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-    
-    /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
 }

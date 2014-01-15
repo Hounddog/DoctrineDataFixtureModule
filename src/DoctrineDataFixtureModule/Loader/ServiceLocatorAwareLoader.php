@@ -31,7 +31,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
  * @link    www.doctrine-project.org
  * @author  Adam Lundrigan <adam@lundrigan.ca>
  */
-class ServiceLocatorAwareLoader extends BaseLoader implements ServiceLocatorAwareInterface
+class ServiceLocatorAwareLoader extends BaseLoader
 {
     /**
      * @var ServiceLocatorInterface
@@ -40,7 +40,7 @@ class ServiceLocatorAwareLoader extends BaseLoader implements ServiceLocatorAwar
 
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
-        $this->setServiceLocator($serviceLocator);
+        $this->serviceLocator = $serviceLocator;
     }
 
     /**
@@ -54,26 +54,5 @@ class ServiceLocatorAwareLoader extends BaseLoader implements ServiceLocatorAwar
             $fixture->setServiceLocator($this->serviceLocator);
         }
         parent::addFixture($fixture);
-    }
-
-    /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        return $this;
-    }
-
-    /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
-    */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 }
