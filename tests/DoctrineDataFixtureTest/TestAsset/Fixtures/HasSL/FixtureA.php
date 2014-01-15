@@ -1,5 +1,5 @@
 <?php
-namespace DoctrineDataFixtureModuleTest\TestAsset\Fixtures\HasSL;
+namespace DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;

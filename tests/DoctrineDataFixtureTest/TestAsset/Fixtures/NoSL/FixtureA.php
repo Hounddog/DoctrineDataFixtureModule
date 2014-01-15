@@ -1,5 +1,5 @@
 <?php
-namespace DoctrineDataFixtureModuleTest\TestAsset\Fixtures\NoSL;
+namespace DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;

@@ -16,7 +16,7 @@
  * and is licensed under the LGPL. For more information, see
  * <http://www.doctrine-project.org>.
  */
-namespace DoctrineDataFixtureModuleTest\Loader;
+namespace DoctrineDataFixtureTest\Loader;
 
 use Doctrine\Common\DataFixtures\Loader;
 use Zend\ServiceManager\ServiceManager;
@@ -39,7 +39,7 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadingFixtureWhichIsNotServiceLocatorAware()
     {
-        $fixtureClassName = 'DoctrineDataFixtureModuleTest\TestAsset\Fixtures\NoSL\FixtureA';
+        $fixtureClassName = 'DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA';
         $serviceLocator = new ServiceManager(new ServiceManagerConfig());
         
         $loader = new ServiceLocatorAwareLoader($serviceLocator);
@@ -58,7 +58,7 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadingFixtureWhichIsServiceLocatorAware()
     {
-        $fixtureClassName = 'DoctrineDataFixtureModuleTest\TestAsset\Fixtures\HasSL\FixtureA';
+        $fixtureClassName = 'DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA';
         $serviceLocator = new ServiceManager(new ServiceManagerConfig());
         
         $loader = new ServiceLocatorAwareLoader($serviceLocator);
