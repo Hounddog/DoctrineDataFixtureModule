@@ -71,5 +71,6 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $fixture);
         $this->assertSame($serviceLocator, $fixture->getServiceLocator());
     }
-    
+
 }
+
