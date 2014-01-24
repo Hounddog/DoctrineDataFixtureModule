@@ -71,7 +71,7 @@ class Module implements
             $em = $sm->get('doctrine.entitymanager.orm_default');
             $paths = $sm->get('doctrine.configuration.fixtures');
 
-            $importCommand = new ImportCommand();
+            $importCommand = new ImportCommand($sm);
             $importCommand->setEntityManager($em);
             $importCommand->setPath($paths);
             ConsoleRunner::addCommands($cli);
