@@ -31,13 +31,15 @@ Then open `config/application.config.php` and add `DoctrineModule`, `DoctrineORM
 
 #### Registering Fixtures
 
-To register drivers with Doctrine module simply add the drivers to the doctrine.driver key in your configuration.
+To register fixtures with Doctrine module add the fixtures to the doctrine key in your configuration.
 
 ```php
 <?php
 return array(
-    'data-fixture' => array(
-        'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
+    'doctrine' => array(
+        'fixture' => array(
+            'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
+        )
     ),
 );
 ```
@@ -47,8 +49,9 @@ return array(
 #### Command Line
 Access the Doctrine command line as following
 
+##Import
 ```sh
-./vendor/bin/doctrine-module
+./vendor/bin/doctrine-module data-fixture:import 
 ```
 
 ##Options

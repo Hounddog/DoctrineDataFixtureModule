@@ -26,9 +26,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Command for generate migration classes by comparing your current database schema
@@ -44,8 +45,20 @@ class ImportCommand extends Command
     protected $paths;
 
     protected $em;
+    
+    /**
+     * Service Locator instance
+     * @var Zend\ServiceManager\ServiceLocatorInterface
+     */
+    protected $serviceLocator;
 
     const PURGE_MODE_TRUNCATE = 2;
+    
+    public function __construct(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -70,7 +83,7 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new Loader();
+        $loader = new ServiceLocatorAwareLoader($this->serviceLocator);
         $purger = new ORMPurger();
 
         if ($input->getOption('purge-with-truncate')) {
