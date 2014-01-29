@@ -27,6 +27,7 @@ use Zend\ModuleManager\ModuleManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use DoctrineDataFixtureModule\Command\ImportCommand;
 use DoctrineDataFixtureModule\Service\FixtureFactory;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 /**
  * Base module for Doctrine Data Fixture.
@@ -74,6 +75,7 @@ class Module implements
             $importCommand = new ImportCommand($sm);
             $importCommand->setEntityManager($em);
             $importCommand->setPath($paths);
+            $importCommand->setORMPurger(new ORMPurger);
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
                 $importCommand

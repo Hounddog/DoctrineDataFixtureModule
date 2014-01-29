@@ -51,12 +51,21 @@ class ImportCommand extends Command
      * @var Zend\ServiceManager\ServiceLocatorInterface
      */
     protected $serviceLocator;
+    /**
+     * ServiceLocatorAwareLoader
+     * @var DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader
+     */
+    protected $loader;
+
+    protected $purger;
 
     const PURGE_MODE_TRUNCATE = 2;
     
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
+        $this->loader = new ServiceLocatorAwareLoader($this->serviceLocator);
+
         parent::__construct();
     }
 
@@ -83,19 +92,14 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new ServiceLocatorAwareLoader($this->serviceLocator);
-        $purger = new ORMPurger();
-
         if ($input->getOption('purge-with-truncate')) {
-            $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
+            $this->purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
-
-        $executor = new ORMExecutor($this->em, $purger);
 
         if ($input->getOption('fixtures') != null) {
             $fixtures = $input->getOption('fixtures');
             if (is_dir($fixtures)) {
-                $loader->loadFromDirectory($fixtures);
+                $this->loader->loadFromDirectory($fixtures);
             } elseif (file_exists($fixtures)) {
                 $classes = get_declared_classes();
                 include($fixtures);
@@ -103,17 +107,18 @@ EOT
 
                 $diff = array_diff($newClasses, $classes);
                 $class = array_pop($diff);
-                $loader->addFixture(new $class);
+                $this->loader->addFixture(new $class);
             } else {
                 throw new \RuntimeException('Cannot find File or Directory.');
             }
         } else {
             foreach ($this->paths as $key => $value) {
-                $loader->loadFromDirectory($value);
+                $this->loader->loadFromDirectory($value);
             }
         }
         
-        $executor->execute($loader->getFixtures(), $input->getOption('append'));
+        $executor = new ORMExecutor($this->em, $this->purger);
+        $executor->execute($this->loader->getFixtures(), $input->getOption('append'));
     }
 
     public function setPath($paths)
@@ -124,5 +129,15 @@ EOT
     public function setEntityManager($em)
     {
         $this->em = $em;
+    }
+
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+
+    public function setPurger(ORMPurger $purger)
+    {
+        $this->purger = $purger;
     }
 }
