@@ -55,4 +55,28 @@ class ServiceLocatorAwareLoader extends BaseLoader
         }
         parent::addFixture($fixture);
     }
+
+    public function loadPath($path)
+    {
+        if (is_dir($path)) {
+            $this->loadFromDirectory($path);
+        } elseif (file_exists($path)) {
+            $classes = get_declared_classes();
+            include($path);
+            $newClasses = get_declared_classes();
+
+            $diff = array_diff($newClasses, $classes);
+            $class = array_pop($diff);
+            $this->addFixture(new $class);
+        } else {
+            throw new \RuntimeException('Cannot find File or Directory.');
+        }
+    }
+
+    public function loadPaths($paths)
+    {
+        foreach ($paths as $key => $value) {
+            $this->loadFromDirectory($value);
+        }
+    }
 }

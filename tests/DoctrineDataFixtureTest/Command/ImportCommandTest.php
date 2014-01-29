@@ -23,11 +23,11 @@ use DoctrineDataFixtureModule\Command\ImportCommand;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Tester\CommandTester;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use PHPUnit_Framework_TestCase;
 use Doctrine\ORM\Tools\Setup;
 
+use Zend\ServiceManager\ServiceManager;
+use Zend\Mvc\Service\ServiceManagerConfig;
 /**
  * Test Import commands for fixtures
  *
@@ -37,44 +37,23 @@ use Doctrine\ORM\Tools\Setup;
  */
 class ImportCommandTest extends PHPUnit_Framework_TestCase
 {
-   /**
-     * @dataProvider provider
-     */
-    public function testExecute($option, $value, $assert)
+    public function testExecute()
     {
-        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
-
-        $command = new ImportCommand($serviceLocator);
-
-        $command->setentityManager($this->getMockSqliteEntityManager());
-        $command->setPurger($this->getMockPurger());
         $paths = array(
             'DoctrineDataFixture_Test_Paths' => __DIR__ . '/../TestAsset/Fixtures/NoSL',
         );
-        $command->setPath($paths);
+
+        $command = new ImportCommand($this->getMockServiceLocatorAwareLoader(), $this->getMockPurger(), $this->getMockSqliteEntityManager(), $paths);
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                $option=> $value,
+                '--append' => 'true',
             )
         );
-
-        $loader= $command->getLoader();        
-        $fixtures = $loader->getFixtures();
-
-        $this->assertArrayHasKey($assert, $fixtures);
     }
 
-    public function provider() {
-        return array(
-            array('--append', true, 'DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA'),
-            array('--fixtures', __DIR__ . '/../TestAsset/Fixtures/NoSL', 'DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA'),
-            array('--fixtures', __DIR__ . '/../TestAsset/Fixtures/HasSL/FixtureA.php', 'DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA')
-        );
-    }
-
-    private function getMockFixture($em)
+    private function getMockFixture()
     {
         return $this->getMock('Doctrine\Common\DataFixtures\FixtureInterface');
     }
@@ -82,6 +61,23 @@ class ImportCommandTest extends PHPUnit_Framework_TestCase
     private function getMockPurger()
     {
         return $this->getMock('Doctrine\Common\DataFixtures\Purger\ORMPurger');
+    }
+
+    protected function getMockServiceLocatorAwareLoader()
+    {
+        $loader = $this->getMock(
+            'DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader',
+            array(),
+            array(new ServiceManager(new ServiceManagerConfig()))
+        );
+
+        $loader->expects($this->once())
+            ->method('getFixtures')
+            ->will($this->returnValue(
+                array($this->getMockFixture())
+            ));
+
+        return $loader;
     }
 
     /**
@@ -96,34 +92,5 @@ class ImportCommandTest extends PHPUnit_Framework_TestCase
         $dbParams = array('driver' => 'pdo_sqlite', 'memory' => true);
         $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__ . '/../TestAsset/Entity'), true);
         return EntityManager::create($dbParams, $config);
-    }
-
-    protected function getMockEntityManager()
-    {
-        $driver = $this->getMock('Doctrine\DBAL\Driver');
-        $driver->expects($this->once())
-            ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMock('Doctrine\DBAL\Platforms\MySqlPlatform')));
-
-        $conn = $this->getMock('Doctrine\DBAL\Connection', array(), array(array(), $driver));
-        $conn->expects($this->once())
-            ->method('getEventManager')
-            ->will($this->returnValue($this->getMock('Doctrine\Common\EventManager')));
-
-        $config = $this->getMock('Doctrine\ORM\Configuration');
-        $config->expects($this->once())
-            ->method('getProxyDir')
-            ->will($this->returnValue('test'));
-
-        $config->expects($this->once())
-            ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxies'));
-
-        $config->expects($this->once())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($this->getMock('Doctrine\ORM\Mapping\Driver\DriverChain')));
-
-        $em = EntityManager::create($conn, $config);
-        return $em;
     }
 }

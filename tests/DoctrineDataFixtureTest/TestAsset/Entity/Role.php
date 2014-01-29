@@ -1,6 +1,6 @@
 <?php
 
-namespace Doctrine\Tests\Common\DataFixtures\TestEntity;
+namespace DoctrineDataFixtureTest\TestAsset\Entity;
 
 /**
  * @Entity

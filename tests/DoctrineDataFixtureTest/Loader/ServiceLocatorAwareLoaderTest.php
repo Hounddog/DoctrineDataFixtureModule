@@ -71,4 +71,48 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $fixture);
         $this->assertSame($serviceLocator, $fixture->getServiceLocator());
     }
+
+    public function testLoadingByConfigPaths()
+    {
+        $paths = array(
+            'DoctrineDataFixture_Test_Paths_NoSL' => __DIR__ . '/../TestAsset/Fixtures/NoSL',
+            'DoctrineDataFixture_Test_Paths_HasSL' => __DIR__ . '/../TestAsset/Fixtures/HasSL',
+        );
+
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPaths($paths);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA', $fixtures);
+
+
+    }
+
+    public function testLoadingByDirectoryPath()
+    {
+        $fixturePath = __DIR__ . '/../TestAsset/Fixtures/HasSL';
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPath($fixturePath);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
+    }
+
+    public function testLoadingByPath()
+    {
+        $fixturePath = __DIR__ . '/../TestAsset/Fixtures/FixtureA.php';
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPath($fixturePath);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\FixtureA', $fixtures);
+
+    }
 }

@@ -29,7 +29,7 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Command for generate migration classes by comparing your current database schema
@@ -47,11 +47,6 @@ class ImportCommand extends Command
     protected $em;
     
     /**
-     * Service Locator instance
-     * @var Zend\ServiceManager\ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-    /**
      * ServiceLocatorAwareLoader
      * @var DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader
      */
@@ -61,10 +56,12 @@ class ImportCommand extends Command
 
     const PURGE_MODE_TRUNCATE = 2;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ServiceLocatorAwareLoader $loader, ORMPurger $purger, EntityManager $em, array $paths = null)
     {
-        $this->serviceLocator = $serviceLocator;
-        $this->loader = new ServiceLocatorAwareLoader($this->serviceLocator);
+        $this->loader = $loader;
+        $this->purger = $purger;
+        $this->em = $em;
+        $this->paths = $paths;
 
         parent::__construct();
     }
@@ -97,47 +94,14 @@ EOT
         }
 
         if ($input->getOption('fixtures') != null) {
-            $fixtures = $input->getOption('fixtures');
-            if (is_dir($fixtures)) {
-                $this->loader->loadFromDirectory($fixtures);
-            } elseif (file_exists($fixtures)) {
-                $classes = get_declared_classes();
-                include($fixtures);
-                $newClasses = get_declared_classes();
-
-                $diff = array_diff($newClasses, $classes);
-                $class = array_pop($diff);
-                $this->loader->addFixture(new $class);
-            } else {
-                throw new \RuntimeException('Cannot find File or Directory.');
-            }
+            $this->loader->loadPath($input->getOption('fixtures'));
         } else {
-            foreach ($this->paths as $key => $value) {
-                $this->loader->loadFromDirectory($value);
-            }
+            $this->loader->loadPaths($this->paths);
         }
-        
+
         $executor = new ORMExecutor($this->em, $this->purger);
+
+    
         $executor->execute($this->loader->getFixtures(), $input->getOption('append'));
-    }
-
-    public function setPath($paths)
-    {
-        $this->paths=$paths;
-    }
-
-    public function setEntityManager($em)
-    {
-        $this->em = $em;
-    }
-
-    public function getLoader()
-    {
-        return $this->loader;
-    }
-
-    public function setPurger(ORMPurger $purger)
-    {
-        $this->purger = $purger;
     }
 }

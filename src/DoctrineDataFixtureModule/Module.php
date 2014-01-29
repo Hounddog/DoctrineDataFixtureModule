@@ -71,11 +71,9 @@ class Module implements
             $sm = $e->getParam('ServiceManager');
             $em = $sm->get('doctrine.entitymanager.orm_default');
             $paths = $sm->get('doctrine.configuration.fixtures');
+            $loader = new ServiceLocatorAwareLoader($sm)
 
-            $importCommand = new ImportCommand($sm);
-            $importCommand->setEntityManager($em);
-            $importCommand->setPath($paths);
-            $importCommand->setORMPurger(new ORMPurger);
+            $importCommand = new ImportCommand($loader, new ORMPurger, $em, $paths);
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
                 $importCommand
