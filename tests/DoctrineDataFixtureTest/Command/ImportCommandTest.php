@@ -28,6 +28,7 @@ use Doctrine\ORM\Tools\Setup;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
+
 /**
  * Test Import commands for fixtures
  *
@@ -37,18 +38,23 @@ use Zend\Mvc\Service\ServiceManagerConfig;
  */
 class ImportCommandTest extends PHPUnit_Framework_TestCase
 {
-    public function testExecute()
+    public function testExecutePurgeWithTruncate()
     {
         $paths = array(
             'DoctrineDataFixture_Test_Paths' => __DIR__ . '/../TestAsset/Fixtures/NoSL',
         );
 
-        $command = new ImportCommand($this->getMockServiceLocatorAwareLoader(), $this->getMockPurger(), $this->getMockSqliteEntityManager(), $paths);
+        $command = new ImportCommand(
+            $this->getMockServiceLocatorAwareLoader(),
+            $this->getMockPurger(),
+            $this->getMockSqliteEntityManager(),
+            $paths
+        );
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
-                '--append' => 'true',
+                '--purge-with-truncate' => 'true',
             )
         );
     }
@@ -60,7 +66,13 @@ class ImportCommandTest extends PHPUnit_Framework_TestCase
 
     private function getMockPurger()
     {
-        return $this->getMock('Doctrine\Common\DataFixtures\Purger\ORMPurger');
+        $purger = $this->getMock('Doctrine\Common\DataFixtures\Purger\ORMPurger');
+
+        $purger->expects($this->once())
+            ->method('setPurgeMode')
+            ->with($this->equalTo(2));
+            
+        return $purger;
     }
 
     protected function getMockServiceLocatorAwareLoader()
@@ -76,6 +88,9 @@ class ImportCommandTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(
                 array($this->getMockFixture())
             ));
+
+        $loader->expects($this->once())
+            ->method('loadPaths');
 
         return $loader;
     }

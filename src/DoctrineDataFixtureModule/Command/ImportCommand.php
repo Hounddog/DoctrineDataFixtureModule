@@ -56,8 +56,12 @@ class ImportCommand extends Command
 
     const PURGE_MODE_TRUNCATE = 2;
     
-    public function __construct(ServiceLocatorAwareLoader $loader, ORMPurger $purger, EntityManager $em, array $paths = null)
-    {
+    public function __construct(
+        ServiceLocatorAwareLoader $loader,
+        ORMPurger $purger,
+        EntityManager $em,
+        array $paths = null
+    ) {
         $this->loader = $loader;
         $this->purger = $purger;
         $this->em = $em;
