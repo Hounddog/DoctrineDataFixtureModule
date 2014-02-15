@@ -35,7 +35,7 @@ class FixtureFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sl)
     {
         /** @var $options \DoctrineORMModule\Options\DBALConnection */
-        $options = $this->getOptions($sl, 'fixtures');
+        $options = $this->getOptions($sl, 'fixture');
         
         return $options;
     }
@@ -51,11 +51,16 @@ class FixtureFactory implements FactoryInterface
      */
     public function getOptions(ServiceLocatorInterface $sl, $key)
     {
-        $options = $sl->get('config');
-        if (!isset($options['doctrine']['fixture'])) {
+        $options = $sl->get('Configuration');
+        if (!isset($options['doctrine'][$key])) {
             return array();
         }
         
-        return $options['doctrine']['fixture'];
+        return $options['doctrine'][$key];
+    }
+
+    public function getOptionsClass()
+    {
+        return 'DoctrineDataFixtureModule\Options\Fixture';
     }
 }
