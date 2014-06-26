@@ -66,13 +66,14 @@ class Module implements
             /* @var $cli \Symfony\Component\Console\Application */
             $cli = $e->getTarget();
 
-            /* @var $sm ServiceLocatorInterface */
+            /* @var $sm \Zend\ServiceManager\ServiceLocatorInterface */
             $sm = $e->getParam('ServiceManager');
             $em = $sm->get('doctrine.entitymanager.orm_default');
             $paths = $sm->get('doctrine.configuration.fixtures');
 
-            $importCommand = new ImportCommand($sm);
+            $importCommand = new ImportCommand();
             $importCommand->setEntityManager($em);
+            $importCommand->setServiceLocator($sm);
             $importCommand->setPath($paths);
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
