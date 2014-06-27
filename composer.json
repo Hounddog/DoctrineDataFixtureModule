@@ -1,6 +1,6 @@
 {
-    "name": "hounddog/doctrine-data-fixture-module",
-    "description": "Zend Framework 2 Module that provides Doctrine Data-Fixture functionality",
+    "name": "ontario/doctrine-data-fixture-module",
+    "description": "Zend Framework 2 Module that provides Doctrine Data-Fixture with Fixteres SL injection functionality",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -9,11 +9,11 @@
         "module",
         "zf2"
     ],
-    "homepage": "http://www.doctrine-project.org/",
+    "homepage": "http://www.ontario.pp.ua/",
     "authors": [
         {
-            "name": "Martin Shwalbe",
-            "email": "martin.shwalbe@gmail.com"
+            "name": "Yuriy V. Yukhimenko",
+            "email": "netmorpheusua@gmail.com"
         }
     ],
     "require": {
