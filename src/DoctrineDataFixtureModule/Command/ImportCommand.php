@@ -68,7 +68,7 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new Loader($this->sm);
+        $loader = new Loader($this->sl);
         $purger = new ORMPurger();
 
         if ($input->getOption('purge-with-truncate')) {
