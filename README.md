@@ -31,16 +31,14 @@ Then open `config/application.config.php` and add `DoctrineModule`, `DoctrineORM
 
 #### Registering Fixtures
 
-To register fixtures with Doctrine module add the fixtures to the doctrine key in your configuration.
+To register fixtures with Doctrine module add the fixtures in your configuration.
 
 ```php
 <?php
 return array(
-    'doctrine' => array(
-        'fixture' => array(
+      'data-fixture' => array(
             'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
-        )
-    ),
+      )
 );
 ```
 
