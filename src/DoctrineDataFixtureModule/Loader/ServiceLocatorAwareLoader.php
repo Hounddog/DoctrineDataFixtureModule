@@ -57,6 +57,10 @@ class ServiceLocatorAwareLoader extends BaseLoader
         parent::addFixture($fixture);
     }
 
+    /**
+     * Load Fixtures from directory or Single fixture from path
+     * @param $path
+     */
     public function loadPath($path)
     {
         if (is_dir($path)) {
@@ -76,6 +80,10 @@ class ServiceLocatorAwareLoader extends BaseLoader
         throw new \RuntimeException('Cannot find File or Directory.');
     }
 
+    /**
+     * Load Fixtures from directories
+     * @param $paths
+     */
     public function loadPaths($paths)
     {
         foreach ($paths as $key => $value) {
