@@ -19,14 +19,18 @@
 
 namespace DoctrineDataFixtureTest\TestAsset\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
+ * @ORM\Table(name="doctrine_data_fixture_user")
  */
 class User
 {
-    /**
-     * @Column(type="integer")
-     * @Id
+    /* 
+     * @ORM\Id
+     * @ORM\Column(type="integer");
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
     
@@ -37,17 +41,17 @@ class User
     private $code;
 
     /**
-     * @Column(length=32)
+     * @ORM\Column(type="string", length=32)
      */
     private $password;
 
     /**
-     * @Column(length=255)
+     *  @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
-     * @ManyToOne(targetEntity="Role", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Role", cascade={"persist"})
      */
     private $role;
 

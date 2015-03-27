@@ -61,6 +61,7 @@ class ServiceLocatorAwareLoader extends BaseLoader
     {
         if (is_dir($path)) {
             $this->loadFromDirectory($path);
+            return $this;
         } elseif (file_exists($path)) {
             $classes = get_declared_classes();
             include($path);
@@ -69,9 +70,10 @@ class ServiceLocatorAwareLoader extends BaseLoader
             $diff = array_diff($newClasses, $classes);
             $class = array_pop($diff);
             $this->addFixture(new $class);
-        } else {
-            throw new \RuntimeException('Cannot find File or Directory.');
+            return $this;
         }
+         
+        throw new \RuntimeException('Cannot find File or Directory.');
     }
 
     public function loadPaths($paths)

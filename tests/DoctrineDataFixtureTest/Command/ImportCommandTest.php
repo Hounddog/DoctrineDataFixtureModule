@@ -39,6 +39,9 @@ use Zend\Mvc\Service\ServiceManagerConfig;
  */
 class ImportCommandTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @covers DoctrineDataFixtureModule\Command\ImportCommand::execute
+     */
     public function testExecutePurgeWithTruncate()
     {
         $paths = array(

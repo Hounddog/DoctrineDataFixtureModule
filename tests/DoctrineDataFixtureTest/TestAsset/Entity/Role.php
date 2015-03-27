@@ -19,20 +19,23 @@
 
 namespace DoctrineDataFixtureTest\TestAsset\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
+ * @ORM\Table(name="doctrine_data_fixture_role")
  */
 class Role
 {
-    /**
-     * @Column(type="integer")
-     * @Id
-     * @GeneratedValue(strategy="IDENTITY")
+    /* 
+     * @ORM\Id
+     * @ORM\Column(type="integer");
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @Column(length=50)
+     * @ORM\Column(type="string", length=50)
      */
     private $name;
 

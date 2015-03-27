@@ -29,7 +29,7 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Command to import Fixtures
@@ -46,31 +46,31 @@ class ImportCommand extends Command
      * EntityManager
      * @var Doctrine\ORM\EntityManager
      */
-    protected $em;
+    protected $entityManager;
     
     /**
      * ServiceLocatorAwareLoader
      * @var DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader
      */
-    protected $loader;
+    protected $serviceLocatorAwareloader;
 
     /**
      * ORMPurger
      * @var Doctrine\Common\DataFixtures\Purger\ORMPurger
      */
-    protected $purger;
+    protected $ormPurger;
 
     const PURGE_MODE_TRUNCATE = 2;
     
     public function __construct(
-        ServiceLocatorAwareLoader $loader,
-        ORMPurger $purger,
-        EntityManager $em,
+        ServiceLocatorAwareLoader $serviceLocatorAwareloader,
+        ORMPurger $ormPurger,
+        EntityManagerInterface $entityManager,
         array $paths = array()
     ) {
-        $this->loader = $loader;
-        $this->purger = $purger;
-        $this->em = $em;
+        $this->serviceLocatorAwareloader = $serviceLocatorAwareloader;
+        $this->ormPurger = $ormPurger;
+        $this->entityManager = $entityManager;
         $this->paths = $paths;
 
         parent::__construct();
@@ -100,17 +100,17 @@ EOT
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('purge-with-truncate')) {
-            $this->purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
+            $this->ormPurger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
         if ($input->getOption('fixtures') !== null) {
-            $this->loader->loadPath($input->getOption('fixtures'));
+            $this->serviceLocatorAwareloader->loadPath($input->getOption('fixtures'));
         } else {
-            $this->loader->loadPaths($this->paths);
+            $this->serviceLocatorAwareloader->loadPaths($this->paths);
         }
 
-        $executor = new ORMExecutor($this->em, $this->purger);
+        $executor = new ORMExecutor($this->entityManager, $this->ormPurger);
 
-        $executor->execute($this->loader->getFixtures(), $input->getOption('append'));
+        $executor->execute($this->serviceLocatorAwareloader->getFixtures(), $input->getOption('append'));
     }
 }

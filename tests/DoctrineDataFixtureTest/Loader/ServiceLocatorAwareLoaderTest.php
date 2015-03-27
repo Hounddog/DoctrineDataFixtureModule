@@ -37,6 +37,9 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Ensures that ServiceLocatorAwareLoader does not affect loading of 
      * fixtures that are not SL-aware
+     * 
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadFromDirectory
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
      */
     public function testLoadingFixtureWhichIsNotServiceLocatorAware()
     {
@@ -56,6 +59,9 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Ensures that the Service Locator instance passed into the ServiceLocatorAwareLoader
      * actually makes it to the SL-aware fixtures loaded
+     *
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadFromDirectory
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
      */
     public function testLoadingFixtureWhichIsServiceLocatorAware()
     {
@@ -73,6 +79,10 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($serviceLocator, $fixture->getServiceLocator());
     }
 
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPaths
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
     public function testLoadingByConfigPaths()
     {
         $paths = array(
@@ -88,10 +98,12 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
         $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA', $fixtures);
-
-
     }
 
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPath
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
     public function testLoadingByDirectoryPath()
     {
         $fixturePath = __DIR__ . '/../TestAsset/Fixtures/HasSL';
@@ -104,6 +116,10 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
     }
 
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPath
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
     public function testLoadingByPath()
     {
         $fixturePath = __DIR__ . '/../TestAsset/Fixtures/FixtureA.php';
