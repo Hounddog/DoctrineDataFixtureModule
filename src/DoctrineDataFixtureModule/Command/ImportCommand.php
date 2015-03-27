@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -32,18 +32,20 @@ use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Command for generate migration classes by comparing your current database schema
- * to your mapping information.
+ * Command to import Fixtures
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
- * @since   2.0
- * @author  Jonathan Wage <jonwage@gmail.com>
+ * @author  Martin Shwalbe <martin.shwalbe@gmail.com>
  */
 class ImportCommand extends Command
 {
     protected $paths;
 
+    /**
+     * EntityManager
+     * @var Doctrine\ORM\EntityManager
+     */
     protected $em;
     
     /**
@@ -52,6 +54,10 @@ class ImportCommand extends Command
      */
     protected $loader;
 
+    /**
+     * ORMPurger
+     * @var Doctrine\Common\DataFixtures\Purger\ORMPurger
+     */
     protected $purger;
 
     const PURGE_MODE_TRUNCATE = 2;
@@ -60,7 +66,7 @@ class ImportCommand extends Command
         ServiceLocatorAwareLoader $loader,
         ORMPurger $purger,
         EntityManager $em,
-        array $paths = null
+        array $paths = array()
     ) {
         $this->loader = $loader;
         $this->purger = $purger;
@@ -97,7 +103,7 @@ EOT
             $this->purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
-        if ($input->getOption('fixtures') != null) {
+        if ($input->getOption('fixtures') !== null) {
             $this->loader->loadPath($input->getOption('fixtures'));
         } else {
             $this->loader->loadPaths($this->paths);
@@ -105,7 +111,6 @@ EOT
 
         $executor = new ORMExecutor($this->em, $this->purger);
 
-    
         $executor->execute($this->loader->getFixtures(), $input->getOption('append'));
     }
 }

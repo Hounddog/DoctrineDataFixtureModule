@@ -13,9 +13,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace DoctrineDataFixtureTest\Loader;
 
 use Doctrine\Common\DataFixtures\Loader;
@@ -26,7 +27,7 @@ use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
 /**
  * Test Service Locator-aware fixture loader
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
  * @author  Adam Lundrigan <adam@lundrigan.ca>
  */

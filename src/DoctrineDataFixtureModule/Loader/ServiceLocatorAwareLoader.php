@@ -13,9 +13,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace DoctrineDataFixtureModule\Loader;
 
 use Doctrine\Common\DataFixtures\Loader as BaseLoader;
@@ -27,7 +28,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
  * Doctrine fixture loader which is ZF2 Service Locator-aware
  * Will inject the service locator instance into all SL-aware fixtures on add
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
  * @author  Adam Lundrigan <adam@lundrigan.ca>
  */
