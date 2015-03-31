@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
-    /* 
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer");
      * @ORM\GeneratedValue(strategy="AUTO")

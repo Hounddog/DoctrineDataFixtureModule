@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Role
 {
-    /* 
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer");
      * @ORM\GeneratedValue(strategy="AUTO")
