@@ -21,7 +21,7 @@
         "zendframework/zend-modulemanager": "2.*",
         "zendframework/zend-eventmanager": "2.*",
         "zendframework/zend-servicemanager": "2.*",
-        "doctrine/data-fixtures": "1.0.*",
+        "doctrine/data-fixtures": "1.1.*",
         "doctrine/doctrine-orm-module": "~0.7"
     },
     "require-dev": {
