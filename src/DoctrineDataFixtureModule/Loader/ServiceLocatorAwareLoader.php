@@ -66,7 +66,9 @@ class ServiceLocatorAwareLoader extends BaseLoader
         if (is_dir($path)) {
             $this->loadFromDirectory($path);
             return $this;
-        } elseif (file_exists($path)) {
+        }
+
+        if (file_exists($path)) {
             $classes = get_declared_classes();
             include($path);
             $newClasses = get_declared_classes();
