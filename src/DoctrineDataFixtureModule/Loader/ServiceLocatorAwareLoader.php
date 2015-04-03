@@ -13,9 +13,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace DoctrineDataFixtureModule\Loader;
 
 use Doctrine\Common\DataFixtures\Loader as BaseLoader;
@@ -27,7 +28,7 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
  * Doctrine fixture loader which is ZF2 Service Locator-aware
  * Will inject the service locator instance into all SL-aware fixtures on add
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
  * @author  Adam Lundrigan <adam@lundrigan.ca>
  */
@@ -54,5 +55,41 @@ class ServiceLocatorAwareLoader extends BaseLoader
             $fixture->setServiceLocator($this->serviceLocator);
         }
         parent::addFixture($fixture);
+    }
+
+    /**
+     * Load Fixtures from directory or Single fixture from path
+     * @param $path
+     */
+    public function loadPath($path)
+    {
+        if (is_dir($path)) {
+            $this->loadFromDirectory($path);
+            return $this;
+        }
+
+        if (file_exists($path)) {
+            $classes = get_declared_classes();
+            include($path);
+            $newClasses = get_declared_classes();
+
+            $diff = array_diff($newClasses, $classes);
+            $class = array_pop($diff);
+            $this->addFixture(new $class);
+            return $this;
+        }
+         
+        throw new \RuntimeException('Cannot find File or Directory.');
+    }
+
+    /**
+     * Load Fixtures from directories
+     * @param $paths
+     */
+    public function loadPaths($paths)
+    {
+        foreach ($paths as $key => $value) {
+            $this->loadFromDirectory($value);
+        }
     }
 }

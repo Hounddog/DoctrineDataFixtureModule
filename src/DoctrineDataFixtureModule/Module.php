@@ -26,7 +26,9 @@ use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\ModuleManager;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use DoctrineDataFixtureModule\Command\ImportCommand;
+use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
 use DoctrineDataFixtureModule\Service\FixtureFactory;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 /**
  * Base module for Doctrine Data Fixture.
@@ -70,13 +72,11 @@ class Module implements
             $sm = $e->getParam('ServiceManager');
             $em = $cli->getHelperSet()->get('em')->getEntityManager();
             $paths = $sm->get('doctrine.configuration.fixtures');
+            $loader = new ServiceLocatorAwareLoader($sm);
 
-            $importCommand = new ImportCommand($sm);
-            $importCommand->setEntityManager($em);
-            $importCommand->setPath($paths);
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
-                $importCommand
+                new ImportCommand($loader, new ORMPurger, $em, $paths)
             ));
         });
     }

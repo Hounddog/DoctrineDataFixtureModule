@@ -16,46 +16,26 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
- 
-namespace DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\FixtureInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+namespace DoctrineDataFixtureTest\TestAsset\Entity;
 
-class FixtureA implements FixtureInterface, ServiceLocatorAwareInterface
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="doctrine_data_fixture_role")
+ */
+class Role
 {
     /**
-     * @var ServiceLocatorInterface
+     * @ORM\Id
+     * @ORM\Column(type="integer");
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $serviceLocator = null;
+    public $id;
 
-
-    public function load(ObjectManager $manager)
-    {
-    }
-    
     /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @ORM\Column(type="string", length=50)
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    
-        return $this;
-    }
-    
-    /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
+    public $name;
 }

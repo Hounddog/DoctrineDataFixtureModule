@@ -16,46 +16,42 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
- 
-namespace DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\FixtureInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+namespace DoctrineDataFixtureTest\TestAsset\Entity;
 
-class FixtureA implements FixtureInterface, ServiceLocatorAwareInterface
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="doctrine_data_fixture_user")
+ */
+class User
 {
     /**
-     * @var ServiceLocatorInterface
+     * @ORM\Id
+     * @ORM\Column(type="integer");
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $serviceLocator = null;
-
-
-    public function load(ObjectManager $manager)
-    {
-    }
+    public $id;
     
     /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @Column(length=32)
+     * @Id
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    
-        return $this;
-    }
-    
+    public $code;
+
     /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
+     * @ORM\Column(type="string", length=32)
      */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
+    public $password;
+
+    /**
+     *  @ORM\Column(type="string", length=255)
+     */
+    public $email;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Role", cascade={"persist"})
+     */
+    public $role;
 }

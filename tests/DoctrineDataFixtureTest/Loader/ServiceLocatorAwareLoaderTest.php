@@ -13,9 +13,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace DoctrineDataFixtureTest\Loader;
 
 use Doctrine\Common\DataFixtures\Loader;
@@ -26,7 +27,7 @@ use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
 /**
  * Test Service Locator-aware fixture loader
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
  * @author  Adam Lundrigan <adam@lundrigan.ca>
  */
@@ -36,6 +37,9 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Ensures that ServiceLocatorAwareLoader does not affect loading of 
      * fixtures that are not SL-aware
+     * 
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadFromDirectory
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
      */
     public function testLoadingFixtureWhichIsNotServiceLocatorAware()
     {
@@ -55,6 +59,9 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Ensures that the Service Locator instance passed into the ServiceLocatorAwareLoader
      * actually makes it to the SL-aware fixtures loaded
+     *
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadFromDirectory
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
      */
     public function testLoadingFixtureWhichIsServiceLocatorAware()
     {
@@ -70,5 +77,59 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Doctrine\Common\DataFixtures\FixtureInterface', $fixture);
         $this->assertInstanceOf('Zend\ServiceManager\ServiceLocatorAwareInterface', $fixture);
         $this->assertSame($serviceLocator, $fixture->getServiceLocator());
+    }
+
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPaths
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
+    public function testLoadingByConfigPaths()
+    {
+        $paths = array(
+            'DoctrineDataFixture_Test_Paths_NoSL' => __DIR__ . '/../TestAsset/Fixtures/NoSL',
+            'DoctrineDataFixture_Test_Paths_HasSL' => __DIR__ . '/../TestAsset/Fixtures/HasSL',
+        );
+
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPaths($paths);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA', $fixtures);
+    }
+
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPath
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
+    public function testLoadingByDirectoryPath()
+    {
+        $fixturePath = __DIR__ . '/../TestAsset/Fixtures/HasSL';
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPath($fixturePath);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA', $fixtures);
+    }
+
+    /**
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::loadPath
+     * @covers DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader::getFixtures
+     */
+    public function testLoadingByPath()
+    {
+        $fixturePath = __DIR__ . '/../TestAsset/Fixtures/FixtureA.php';
+        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        
+        $loader = new ServiceLocatorAwareLoader($serviceLocator);
+        $loader->loadPath($fixturePath);
+        $fixtures = $loader->getFixtures();
+
+        $this->assertArrayHasKey('DoctrineDataFixtureTest\TestAsset\Fixtures\FixtureA', $fixtures);
+
     }
 }

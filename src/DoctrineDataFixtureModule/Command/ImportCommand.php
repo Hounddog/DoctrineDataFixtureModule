@@ -13,7 +13,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the LGPL. For more information, see
+ * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
 
@@ -29,34 +29,50 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Command for generate migration classes by comparing your current database schema
- * to your mapping information.
+ * Command to import Fixtures
  *
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @license MIT
  * @link    www.doctrine-project.org
- * @since   2.0
- * @author  Jonathan Wage <jonwage@gmail.com>
+ * @author  Martin Shwalbe <martin.shwalbe@gmail.com>
  */
 class ImportCommand extends Command
 {
     protected $paths;
 
-    protected $em;
+    /**
+     * EntityManager
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $entityManager;
     
     /**
-     * Service Locator instance
-     * @var Zend\ServiceManager\ServiceLocatorInterface
+     * ServiceLocatorAwareLoader
+     * @var DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader
      */
-    protected $serviceLocator;
+    protected $serviceLocatorAwareloader;
+
+    /**
+     * ORMPurger
+     * @var Doctrine\Common\DataFixtures\Purger\ORMPurger
+     */
+    protected $ormPurger;
 
     const PURGE_MODE_TRUNCATE = 2;
     
-    public function __construct(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
+    public function __construct(
+        ServiceLocatorAwareLoader $serviceLocatorAwareloader,
+        ORMPurger $ormPurger,
+        EntityManagerInterface $entityManager,
+        array $paths = array()
+    ) {
+        $this->serviceLocatorAwareloader = $serviceLocatorAwareloader;
+        $this->ormPurger = $ormPurger;
+        $this->entityManager = $entityManager;
+        $this->paths = $paths;
+
         parent::__construct();
     }
 
@@ -72,33 +88,29 @@ The import command Imports data-fixtures
 EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
+            ->addOption(
+                'fixtures',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Set path to Fixture Class or Directory to be added'
+            );
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new ServiceLocatorAwareLoader($this->serviceLocator);
-        $purger = new ORMPurger();
-
         if ($input->getOption('purge-with-truncate')) {
-            $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
+            $this->ormPurger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
-        $executor = new ORMExecutor($this->em, $purger);
-
-        foreach ($this->paths as $key => $value) {
-            $loader->loadFromDirectory($value);
+        if ($input->getOption('fixtures') !== null) {
+            $this->serviceLocatorAwareloader->loadPath($input->getOption('fixtures'));
+        } else {
+            $this->serviceLocatorAwareloader->loadPaths($this->paths);
         }
-        $executor->execute($loader->getFixtures(), $input->getOption('append'));
-    }
 
-    public function setPath($paths)
-    {
-        $this->paths=$paths;
-    }
+        $executor = new ORMExecutor($this->entityManager, $this->ormPurger);
 
-    public function setEntityManager($em)
-    {
-        $this->em = $em;
+        $executor->execute($this->serviceLocatorAwareloader->getFixtures(), $input->getOption('append'));
     }
 }
