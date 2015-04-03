@@ -32,66 +32,26 @@ class User
      * @ORM\Column(type="integer");
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    public $id;
     
     /**
      * @Column(length=32)
      * @Id
      */
-    private $code;
+    public $code;
 
     /**
      * @ORM\Column(type="string", length=32)
      */
-    private $password;
+    public $password;
 
     /**
      *  @ORM\Column(type="string", length=255)
      */
-    private $email;
+    public $email;
 
     /**
      * @ORM\ManyToOne(targetEntity="Role", cascade={"persist"})
      */
-    private $role;
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-    
-    public function setPassword($password)
-    {
-        $this->password = md5($password);
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function setRole(Role $role)
-    {
-        $this->role = $role;
-    }
-
-    public function getRole()
-    {
-        return $this->role;
-    }
+    public $role;
 }
