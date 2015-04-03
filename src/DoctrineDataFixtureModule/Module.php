@@ -74,10 +74,9 @@ class Module implements
             $paths = $sm->get('doctrine.configuration.fixtures');
             $loader = new ServiceLocatorAwareLoader($sm);
 
-            $importCommand = new ImportCommand($loader, new ORMPurger, $em, $paths);
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
-                $importCommand
+                new ImportCommand($loader, new ORMPurger, $em, $paths)
             ));
         });
     }
