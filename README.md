@@ -36,11 +36,9 @@ To register fixtures with Doctrine module add the fixtures in your configuration
 ```php
 <?php
 return array(
-      'doctrine' => array(
-            'fixture' => array(
-                  'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
-            )
-      )
+    'data-fixture' => array(
+        'ModuleName_fixture' => __DIR__ . '/../src/ModuleName/Fixture',
+    )
 );
 ```
 
