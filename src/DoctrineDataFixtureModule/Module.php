@@ -74,7 +74,6 @@ class Module implements
             $importCommand = new ImportCommand($sm);
             $importCommand->setEntityManager($em);
             $importCommand->setPath($paths);
-            ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
                 $importCommand
             ));
