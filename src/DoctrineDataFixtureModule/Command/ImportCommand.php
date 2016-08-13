@@ -22,10 +22,7 @@ namespace DoctrineDataFixtureModule\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
@@ -48,7 +45,7 @@ class ImportCommand extends Command
     
     /**
      * Service Locator instance
-     * @var Zend\ServiceManager\ServiceLocatorInterface
+     * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -72,7 +69,9 @@ The import command Imports data-fixtures
 EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
+            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Set a specific path for fixtures')
+            ->addOption('file', null, InputOption::VALUE_OPTIONAL, 'Set a specific file for fixtures');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -84,17 +83,23 @@ EOT
             $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
         }
 
-        $executor = new ORMExecutor($this->em, $purger);
-
-        foreach ($this->paths as $key => $value) {
-            $loader->loadFromDirectory($value);
+        if ($input->getOption('path')) {
+            $loader->loadFromDirectory($input->getOption('path'));
+        } elseif ($input->getOption('file')) {
+            $loader->loadFromFile($input->getOption('file'));
+        } else {
+            foreach ($this->paths as $key => $value) {
+                $loader->loadFromDirectory($value);
+            }
         }
+
+        $executor = new ORMExecutor($this->em, $purger);
         $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
     public function setPath($paths)
     {
-        $this->paths=$paths;
+        $this->paths = $paths;
     }
 
     public function setEntityManager($em)
