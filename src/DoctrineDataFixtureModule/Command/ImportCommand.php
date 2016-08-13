@@ -22,10 +22,7 @@ namespace DoctrineDataFixtureModule\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
@@ -48,7 +45,7 @@ class ImportCommand extends Command
     
     /**
      * Service Locator instance
-     * @var Zend\ServiceManager\ServiceLocatorInterface
+     * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -72,7 +69,8 @@ The import command Imports data-fixtures
 EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
-            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data');
+            ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
+            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Set a specific path for fixtures');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -82,6 +80,10 @@ EOT
 
         if ($input->getOption('purge-with-truncate')) {
             $purger->setPurgeMode(self::PURGE_MODE_TRUNCATE);
+        }
+
+        if ($input->getOption('path')) {
+            $this->setPath([$input->getOption('path')]);
         }
 
         $executor = new ORMExecutor($this->em, $purger);
@@ -94,7 +96,7 @@ EOT
 
     public function setPath($paths)
     {
-        $this->paths=$paths;
+        $this->paths = $paths;
     }
 
     public function setEntityManager($em)

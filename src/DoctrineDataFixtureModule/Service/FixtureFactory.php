@@ -44,12 +44,10 @@ class FixtureFactory implements FactoryInterface
      * Gets options from configuration based on name.
      *
      * @param  ServiceLocatorInterface      $sl
-     * @param  string                       $key
-     * @param  null|string                  $name
      * @return \Zend\Stdlib\AbstractOptions
      * @throws \RuntimeException
      */
-    public function getOptions(ServiceLocatorInterface $sl, $key)
+    public function getOptions(ServiceLocatorInterface $sl)
     {
         $options = $sl->get('config');
         if (!isset($options['doctrine']['fixture'])) {
