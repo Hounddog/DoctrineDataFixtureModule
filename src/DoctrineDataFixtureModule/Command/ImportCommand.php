@@ -70,7 +70,8 @@ EOT
             )
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append data to existing data.')
             ->addOption('purge-with-truncate', null, InputOption::VALUE_NONE, 'Truncate tables before inserting data')
-            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Set a specific path for fixtures');
+            ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'Set a specific path for fixtures')
+            ->addOption('file', null, InputOption::VALUE_OPTIONAL, 'Set a specific file for fixtures');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -83,14 +84,16 @@ EOT
         }
 
         if ($input->getOption('path')) {
-            $this->setPath([$input->getOption('path')]);
+            $loader->loadFromDirectory($input->getOption('path'));
+        } elseif ($input->getOption('file')) {
+            $loader->loadFromFile($input->getOption('file'));
+        } else {
+            foreach ($this->paths as $key => $value) {
+                $loader->loadFromDirectory($value);
+            }
         }
 
         $executor = new ORMExecutor($this->em, $purger);
-
-        foreach ($this->paths as $key => $value) {
-            $loader->loadFromDirectory($value);
-        }
         $executor->execute($loader->getFixtures(), $input->getOption('append'));
     }
 
