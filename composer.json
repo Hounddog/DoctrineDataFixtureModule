@@ -37,5 +37,6 @@
         "psr-0": {
             "DoctrineDataFixtureModule": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
