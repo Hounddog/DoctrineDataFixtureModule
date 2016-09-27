@@ -23,7 +23,7 @@ Installation of this module uses composer. For composer documentation, please re
 [getcomposer.org](http://getcomposer.org/).
 
 ```sh
-$ php composer.phar require hounddog/doctrine-data-fixture-module:0.0.*
+$ php composer.phar require herbertscruz/doctrine-data-fixture-module:0.0.*
 ```
 
 Then open `config/application.config.php` and add `DoctrineModule`, `DoctrineORMModule` and 
