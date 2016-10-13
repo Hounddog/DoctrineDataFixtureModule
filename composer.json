@@ -20,7 +20,7 @@
         "php": "^5.5 || ^7.0",
         "zendframework/zend-modulemanager": "^2.0",
         "zendframework/zend-eventmanager": "^2.0",
-        "zendframework/zend-servicemanager": "^2.0 || ^3.0",
+        "zendframework/zend-servicemanager": "^2.0",
         "doctrine/data-fixtures": "^1.1",
         "doctrine/doctrine-orm-module": "^1.0"
     },
