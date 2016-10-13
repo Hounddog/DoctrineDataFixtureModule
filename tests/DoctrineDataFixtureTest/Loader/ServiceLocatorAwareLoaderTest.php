@@ -40,7 +40,7 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadingFixtureWhichIsNotServiceLocatorAware()
     {
         $fixtureClassName = 'DoctrineDataFixtureTest\TestAsset\Fixtures\NoSL\FixtureA';
-        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        $serviceLocator = new ServiceManager(array());
         
         $loader = new ServiceLocatorAwareLoader($serviceLocator);
         $loader->loadFromDirectory(__DIR__ . '/../TestAsset/Fixtures/NoSL');
@@ -59,7 +59,7 @@ class ServiceLocatorAwareLoaderTest extends \PHPUnit_Framework_TestCase
     public function testLoadingFixtureWhichIsServiceLocatorAware()
     {
         $fixtureClassName = 'DoctrineDataFixtureTest\TestAsset\Fixtures\HasSL\FixtureA';
-        $serviceLocator = new ServiceManager(new ServiceManagerConfig());
+        $serviceLocator = new ServiceManager(array());
         
         $loader = new ServiceLocatorAwareLoader($serviceLocator);
         $loader->loadFromDirectory(__DIR__ . '/../TestAsset/Fixtures/HasSL');
