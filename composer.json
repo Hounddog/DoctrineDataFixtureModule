@@ -2,11 +2,11 @@
   "name" : "hounddog/doctrine-data-fixture-module",
   "description" : "Zend Framework 2 Module that provides Doctrine Data-Fixture functionality",
   "require" : {
-    "php" : ">=5.3.3",
+    "php" : ">=5.6",
     "zendframework/zend-modulemanager" : "2.*",
     "zendframework/zend-eventmanager" : "2.*",
     "zendframework/zend-servicemanager" : "2.*",
-    "doctrine/data-fixtures" : "dev-master",
+    "doctrine/data-fixtures" : "v1.2.2",
     "doctrine/doctrine-orm-module" : "~1.1.1"
   },
   "require-dev" : {
