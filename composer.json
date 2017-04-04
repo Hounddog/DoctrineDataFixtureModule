@@ -1,5 +1,5 @@
 {
-  "name" : "hounddog/doctrine-data-fixture-module",
+  "name" : "samuel20miglia/doctrine-data-fixture-module",
   "description" : "Zend Framework 2 Module that provides Doctrine Data-Fixture functionality",
   "require" : {
     "php" : ">=5.6",
@@ -26,5 +26,9 @@
   "authors" : [ {
     "name" : "Martin Shwalbe",
     "email" : "martin.shwalbe@gmail.com"
+  },
+  {
+    "name" : "Samuel Ventimiglia",
+    "email" : "sam.ventimiglia@gmail.com"
   } ]
 }
