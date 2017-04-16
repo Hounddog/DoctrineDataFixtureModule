@@ -26,9 +26,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader as Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use DoctrineDataFixtureModule\Loader\ServiceLocatorAwareLoader;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -40,25 +41,15 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since   2.0
  * @author  Jonathan Wage <jonwage@gmail.com>
  */
-class ImportCommand extends Command
+class ImportCommand extends Command implements ServiceLocatorAwareInterface
 {
     protected $paths;
 
     protected $em;
-    
-    /**
-     * Service Locator instance
-     * @var Zend\ServiceManager\ServiceLocatorInterface
-     */
-    protected $serviceLocator;
+
+    protected $sl;
 
     const PURGE_MODE_TRUNCATE = 2;
-    
-    public function __construct(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-        parent::__construct();
-    }
 
     protected function configure()
     {
@@ -77,7 +68,7 @@ EOT
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new ServiceLocatorAwareLoader($this->serviceLocator);
+        $loader = new Loader($this->sl);
         $purger = new ORMPurger();
 
         if ($input->getOption('purge-with-truncate')) {
@@ -100,5 +91,25 @@ EOT
     public function setEntityManager($em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->sl = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->sl;
     }
 }
